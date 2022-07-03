@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 
+const adminRoutes = require('./routes/adminRoutes');
 const router = require('./routes/router')
 const {connectDB} = require('./config/dbConn');
 const { isAuth } = require('./controllers/authController');
@@ -21,10 +22,24 @@ app.use((req, res, next)=> {
         message: "API called"
     })*/
     console.log('API called')
+    next();
 })
 app.use(cors);
 
-app.use(router);
+app.get('/', (req, res, next) => {
+    console.log('hello');
+    res.json({message: 'hello'});
+
+}) 
+
+app.post('/hello', (req, res, next) => {
+    console.log(req.body.message);
+    res.json({message: req.body.message})
+})
+
+app.use('/admin', (req, res, next) => {
+    console.log('admin route')
+}, adminRoutes);
 
 app.use((_, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
